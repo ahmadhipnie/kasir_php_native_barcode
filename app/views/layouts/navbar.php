@@ -1,12 +1,91 @@
-<nav class="navbar navbar-dark bg-dark sticky-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="<?= BASE_URL ?>">
-            <?= APP_NAME ?>
+<nav
+    class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+    id="layout-navbar">
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+            <i class="bx bx-menu bx-sm"></i>
         </a>
-        <div class="navbar-nav ms-auto">
-            <span class="navbar-text text-white">
-                Admin
-            </span>
+    </div>
+
+    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        <!-- Search -->
+        <div class="navbar-nav align-items-center">
+            <div class="nav-item d-flex align-items-center">
+                <i class="bx bx-search fs-4 lh-0"></i>
+                <input
+                    type="text"
+                    class="form-control border-0 shadow-none"
+                    id="globalSearch"
+                    placeholder="Cari produk..."
+                    aria-label="Cari produk..."
+                    autocomplete="off" />
+            </div>
         </div>
+        <!-- /Search -->
+
+        <ul class="navbar-nav flex-row align-items-center ms-auto">
+            <?php $user = $_SESSION['user'] ?? []; ?>
+            <!-- User -->
+            <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                        <span class="avatar-initial rounded-circle bg-label-primary">
+                            <?= strtoupper(substr($user['name'] ?? 'U', 0, 1)) ?>
+                        </span>
+                    </div>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <a class="dropdown-item" href="<?= BASE_URL ?>profile">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 me-3">
+                                    <div class="avatar avatar-online">
+                                        <span class="avatar-initial rounded-circle bg-label-primary">
+                                            <?= strtoupper(substr($user['name'] ?? 'U', 0, 1)) ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <span class="fw-semibold d-block"><?= htmlspecialchars($user['name'] ?? 'User') ?></span>
+                                    <small class="text-muted"><?= ucfirst($user['role'] ?? 'kasir') ?></small>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="<?= BASE_URL ?>profile">
+                            <i class="bx bx-user me-2"></i>
+                            <span class="align-middle">Profil Saya</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="<?= BASE_URL ?>auth/logout">
+                            <i class="bx bx-power-off me-2"></i>
+                            <span class="align-middle">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!--/ User -->
+        </ul>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('globalSearch');
+        if (searchInput) {
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    window.location.href = BASE_URL + 'products?q=' + encodeURIComponent(this.value.trim());
+                }
+            });
+        }
+    });
+</script>

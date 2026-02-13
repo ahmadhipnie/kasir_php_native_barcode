@@ -2,7 +2,7 @@
 
 return [
     'host' => 'localhost',
-    'database' => 'kasir_barcode',
+    'database' => 'db_kasir_barcode',
     'username' => 'root',
     'password' => '',
     'charset' => 'utf8mb4'

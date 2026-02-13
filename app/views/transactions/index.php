@@ -1,41 +1,60 @@
 <?php ob_start(); ?>
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2"><?= $title ?></h1>
-</div>
-
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Kode Transaksi</th>
-                <th>Tanggal</th>
-                <th>Total</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($transactions)): ?>
-                <?php foreach ($transactions as $transaction): ?>
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="mb-0"><?= $title ?></h5>
+        <a href="<?= BASE_URL ?>transactions/create" class="btn btn-primary btn-sm">
+            <i class="bx bx-plus me-1"></i> Transaksi Baru
+        </a>
+    </div>
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th>Kode Transaksi</th>
+                    <th>Tanggal</th>
+                    <th>Total</th>
+                    <th>Bayar</th>
+                    <th>Kembalian</th>
+                    <th style="width:5%">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+                <?php if (!empty($transactions)): ?>
+                    <?php foreach ($transactions as $i => $trx): ?>
+                        <tr>
+                            <td><?= $i + 1 ?></td>
+                            <td><code><?= htmlspecialchars($trx->transaction_code) ?></code></td>
+                            <td><?= date('d/m/Y H:i', strtotime($trx->transaction_date)) ?></td>
+                            <td class="fw-semibold">Rp <?= number_format($trx->total_amount, 0, ',', '.') ?></td>
+                            <td>Rp <?= number_format($trx->payment_amount, 0, ',', '.') ?></td>
+                            <td>Rp <?= number_format($trx->change_amount, 0, ',', '.') ?></td>
+                            <td>
+                                <a href="<?= BASE_URL ?>transactions/detail/<?= $trx->id ?>"
+                                    class="btn btn-sm btn-icon btn-outline-primary" title="Detail">
+                                    <i class="bx bx-show"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
                     <tr>
-                        <td><?= $transaction->transaction_code ?></td>
-                        <td><?= date('d/m/Y H:i', strtotime($transaction->transaction_date)) ?></td>
-                        <td>Rp <?= number_format($transaction->total_amount, 0, ',', '.') ?></td>
-                        <td>
-                            <a href="<?= BASE_URL ?>transactions/detail/<?= $transaction->id ?>" class="btn btn-sm btn-info">Detail</a>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bx bx-receipt" style="font-size:2.5rem"></i>
+                            <div class="mt-2">Belum ada transaksi</div>
+                            <a href="<?= BASE_URL ?>transactions/create" class="btn btn-primary btn-sm mt-3">
+                                <i class="bx bx-plus me-1"></i> Buat Transaksi
+                            </a>
                         </td>
                     </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="4" class="text-center">Belum ada transaksi</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<?php 
+<?php
 $content = ob_get_clean();
 include '../app/views/layouts/header.php';
 ?>
