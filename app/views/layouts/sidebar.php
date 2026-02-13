@@ -127,7 +127,7 @@
 
         <li class="menu-item <?= in_array($t, ['Daftar Supplier', 'Tambah Supplier', 'Edit Supplier']) ? 'active' : '' ?>">
             <a href="<?= BASE_URL ?>suppliers" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-truck"></i>
+                <i class="menu-icon tf-icons bx bx-building-house"></i>
                 <div>Supplier</div>
             </a>
         </li>

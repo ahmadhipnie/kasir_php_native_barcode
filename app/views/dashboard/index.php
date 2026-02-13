@@ -212,4 +212,4 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>';
 
 include '../app/views/layouts/header.php';
-?>
+?>  
