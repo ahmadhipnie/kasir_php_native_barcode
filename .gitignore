@@ -1,0 +1,32 @@
+# Dependencies
+vendor/
+node_modules/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+storage/logs/*.log
+!storage/logs/.gitkeep
+
+# Uploads
+storage/uploads/*
+!storage/uploads/.gitkeep
+
+# Config (jika ada sensitive data)
+# config/database.php
+
+# Cache
+*.cache
