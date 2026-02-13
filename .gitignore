@@ -30,3 +30,8 @@ storage/uploads/*
 
 # Cache
 *.cache
+
+# Template
+sneat-1.0.0/
+QUICK_START.md
+TEMPLATE_INTEGRATION_GUIDE.md
