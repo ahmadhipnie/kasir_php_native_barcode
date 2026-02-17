@@ -1,69 +1,104 @@
 <?php ob_start(); ?>
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-    <h1 class="h2"><?= $title ?></h1>
-    <a href="<?= BASE_URL ?>transactions" class="btn btn-secondary">Kembali</a>
-</div>
-
 <?php if ($transaction): ?>
-    <div class="card mb-3">
+    <div class="card mb-4">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">Informasi Transaksi</h5>
+            <div>
+                <button class="btn btn-outline-secondary btn-sm me-2" onclick="window.print()">
+                    <i class="bx bx-printer me-1"></i> Cetak Struk
+                </button>
+                <a href="<?= BASE_URL ?>transactions" class="btn btn-outline-secondary btn-sm">
+                    <i class="bx bx-arrow-back me-1"></i> Kembali
+                </a>
+            </div>
+        </div>
         <div class="card-body">
-            <h5>Informasi Transaksi</h5>
-            <table class="table table-borderless">
-                <tr>
-                    <td width="200">Kode Transaksi</td>
-                    <td>: <?= $transaction->transaction_code ?></td>
-                </tr>
-                <tr>
-                    <td>Tanggal</td>
-                    <td>: <?= date('d/m/Y H:i', strtotime($transaction->transaction_date)) ?></td>
-                </tr>
-            </table>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label text-muted">Kode Transaksi</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-plaintext fw-semibold"><?= htmlspecialchars($transaction->transaction_code) ?></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 row">
+                        <label class="col-sm-4 col-form-label text-muted">Tanggal</label>
+                        <div class="col-sm-8">
+                            <p class="form-control-plaintext"><?= date('d/m/Y H:i:s', strtotime($transaction->transaction_date)) ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="card">
-        <div class="card-body">
-            <h5>Detail Produk</h5>
+        <h5 class="card-header">Detail Produk</h5>
+        <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
+                        <th style="width:5%">#</th>
                         <th>Produk</th>
                         <th>Harga</th>
                         <th>Qty</th>
-                        <th>Subtotal</th>
+                        <th class="text-end">Subtotal</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php foreach ($transaction->items as $item): ?>
+                <tbody class="table-border-bottom-0">
+                    <?php foreach ($transaction->items as $i => $item): ?>
                         <tr>
-                            <td><?= $item->product_name ?> (<?= $item->barcode ?>)</td>
+                            <td><?= $i + 1 ?></td>
+                            <td>
+                                <strong><?= htmlspecialchars($item->product_name) ?></strong>
+                                <br><small class="text-muted"><code><?= htmlspecialchars($item->barcode) ?></code></small>
+                            </td>
                             <td>Rp <?= number_format($item->price, 0, ',', '.') ?></td>
-                            <td><?= $item->quantity ?></td>
-                            <td>Rp <?= number_format($item->subtotal, 0, ',', '.') ?></td>
+                            <td><span class="badge bg-label-primary"><?= $item->quantity ?></span></td>
+                            <td class="text-end fw-semibold">Rp <?= number_format($item->subtotal, 0, ',', '.') ?></td>
                         </tr>
                     <?php endforeach; ?>
-                    <tr>
-                        <td colspan="3" class="text-end"><strong>Total</strong></td>
-                        <td><strong>Rp <?= number_format($transaction->total_amount, 0, ',', '.') ?></strong></td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="text-end">Bayar</td>
-                        <td>Rp <?= number_format($transaction->payment_amount, 0, ',', '.') ?></td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="text-end">Kembalian</td>
-                        <td>Rp <?= number_format($transaction->change_amount, 0, ',', '.') ?></td>
-                    </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-end fw-semibold border-top">Total</td>
+                        <td class="text-end fw-bold border-top fs-5">Rp <?= number_format($transaction->total_amount, 0, ',', '.') ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end text-muted">Bayar</td>
+                        <td class="text-end">Rp <?= number_format($transaction->payment_amount, 0, ',', '.') ?></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end text-muted">Kembalian</td>
+                        <td class="text-end text-success fw-semibold">Rp <?= number_format($transaction->change_amount, 0, ',', '.') ?></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
 <?php else: ?>
-    <div class="alert alert-warning">Transaksi tidak ditemukan</div>
+    <div class="alert alert-warning">
+        <i class="bx bx-error me-2"></i> Transaksi tidak ditemukan
+    </div>
 <?php endif; ?>
 
-<?php 
+<?php
 $content = ob_get_clean();
+
+/* Print-only receipt styles */
+$pageStyles = '
+<style>
+@media print {
+    .layout-navbar, .layout-menu, .layout-footer,
+    .card-header .btn, .content-footer { display: none !important; }
+    .layout-page { margin: 0 !important; padding: 0 !important; }
+    .content-wrapper { padding: 0 !important; }
+    .card { border: none !important; box-shadow: none !important; }
+}
+</style>';
+
 include '../app/views/layouts/header.php';
 ?>
